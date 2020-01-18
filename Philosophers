@@ -1,0 +1,78 @@
+package Concurrency_lesson;
+
+import lombok.SneakyThrows;
+
+public class DiningPhilosophers {
+   final static Fork [] set = {new Fork(1),
+            new Fork(3),new Fork(5),
+            new Fork(7),new Fork(9),
+          };
+    final static Philosopher PLATO = new Philosopher( "Plato", set[0],set[1]);
+    final static Philosopher ARISTOTEL = new Philosopher( "Aristotel", set[1],set[2]);
+    final static Philosopher NIETZSCHE = new Philosopher( "Nietzsche", set[2],set[3]);
+    final static Philosopher TOLSTOY = new Philosopher( "Tolstoy", set[3],set[4]);
+    final static Philosopher BERDYAYEV = new Philosopher( "Berdyayev", set[4],set[0]);
+    public static void main(String[] args) {
+        while (true){
+            PLATO.eat();
+        /*    ARISTOTEL.eat();
+            NIETZSCHE.eat();
+            TOLSTOY.eat();
+            BERDYAYEV.eat();*/
+        }
+    }
+}
+
+class Philosopher implements Runnable{
+    String name;
+    Fork left;
+    Fork right;
+
+    public Philosopher(String name, Fork left, Fork right) {
+        this.name = name;
+        this.left = left;
+        this.right = right;
+    }
+
+    void eat(){
+     run();
+ }
+
+    @SneakyThrows
+    @Override
+    public void run() {
+        if(left.isFree&&right.isFree){
+            left.isFree=false;
+            right.isFree=false;
+            for (int i = 0; i <3 ; i++) {
+                System.out.println(this.name + " :om-nom-nom!");
+                System.out.println(" первая вилка свободна? "+ DiningPhilosophers.set[0].isFree);
+                System.out.println(" вторая вилка свободна? "+ DiningPhilosophers.set[1].isFree);
+                System.out.println(" третья вилка свободна? "+ DiningPhilosophers.set[2].isFree);
+                System.out.println(" четвертая вилка свободна? "+ DiningPhilosophers.set[3].isFree);
+                System.out.println(" пятая вилка свободна? "+ DiningPhilosophers.set[4].isFree);
+
+                Thread.currentThread().sleep( 1000 );
+            }
+            System.out.println(this.name + " has finished his Dinner");
+            left.isFree=true;
+            right.isFree=true;
+        }
+        else{
+            System.out.println(this.name + " is waiting...");
+            Thread.currentThread().join();}
+    }
+}
+class Fork{
+    public boolean isFree = true;
+    private int relativePosition;
+
+    public int getRelativePosition() {
+        return relativePosition;
+    }
+
+    public Fork(int relativePosition) {
+        this.relativePosition = relativePosition;
+    }
+
+}
